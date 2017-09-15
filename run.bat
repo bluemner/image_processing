@@ -1,0 +1,3 @@
+FOR %%G IN (3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20) DO (.\bin\ReadWritePGMx.exe ./data/street.pgm ./bin/windows_run/windows_street_%%G.pgm %%G)
+FOR %%G IN (3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20) DO  (.\bin\ReadWritePGMx.exe ./data/woman.pgm ./bin/windows_run/windows_woman_%%G.pgm %%G)
+FOR %%G IN (3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20) DO  (.\bin\ReadWritePGMx.exe ./data/ship.pgm ./bin/windows_run/windows_ship_%%G.pgm %%G)
