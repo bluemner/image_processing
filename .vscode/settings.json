@@ -41,6 +41,9 @@
 		"xmemory": "cpp",
 		"xmemory0": "cpp",
 		"xstddef": "cpp",
-		"xtr1common": "cpp"
+		"xtr1common": "cpp",
+		"ctime": "cpp",
+		"iomanip": "cpp",
+		"xloctime": "cpp"
 	}
 }
