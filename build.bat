@@ -47,5 +47,5 @@ set file_name=hw1
 echo building %file_name%
 set compilerflags=/Fo.\bin\ /Od /Zi /EHsc 
 set linkerflags=/OUT:bin\%file_name%.exe
-cl.exe %compilerflags% source/%file_name%.cpp source/PGM.cpp /link %linkerflags%
+cl.exe %compilerflags% source/%file_name%.cpp /link %linkerflags%
 

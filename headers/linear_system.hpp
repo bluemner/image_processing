@@ -339,12 +339,20 @@ namespace betacore{
 				return (T) (total);
 			}
 			void get_x(Matrix<T> &x){
-				Matrix<T> mm(this->size,1);
+				//Matrix<T> mm(this->size,1);
 				for(size_t i=0; i< this->size; i++){
 					x.set(i,0,this->x[i]);
 				} 
 			
 			}
+			
+			template<size_t row>
+			void get_x(T(&x)[row]){
+				for(size_t i=0; i< this->size; i++){
+					x[i] =this->x[i];
+				}
+			}
+			
 			T SL(){
 				return x[1];
 			}

@@ -1,13 +1,19 @@
 #include "../headers/PGM.h"
-#include <cstdio>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include <malloc.h>  
+#include <malloc.h>
 #include <memory.h>
+#include <fstream>
 
 namespace uwm{
-	void PGM::read(const std::string file_path, std::vector<unsigned char> &vector_image, int &x_dimension, int &y_dimension){
+	void PGM::read(
+		const std::string file_path,
+		std::vector<unsigned char> &vector_image,
+		int &x_dimension,
+		int &y_dimension)
+	{
 		FILE *fp;
 		if ((fp=fopen(file_path.c_str(), "rb"))==NULL){
 			printf("read error...\n");
@@ -42,7 +48,7 @@ namespace uwm{
 			 exit(0);
 		   }
 		   printf("Width=%d, Height=%d \nMaximum=%d\n",x_dimension,y_dimension,maxraw);
-	
+		   vector_image.resize(x_dimension*y_dimension);
 		   image = (unsigned char*)malloc(sizeof(unsigned char)*x_dimension*y_dimension);
 		   getc(fp);
 	
@@ -51,10 +57,10 @@ namespace uwm{
 			  fread(line, 1, x_dimension, fp);
 			  for (i=0; i<x_dimension; i++) {
 				image[j*x_dimension+i] = line[i];
+				vector_image.at(j*x_dimension+i) = line[i];
 			 }
 		   }
 		   free(line);
-	
 		 }
 	
 		 else if (c==2) {
@@ -74,39 +80,44 @@ namespace uwm{
 			 for (i=0; i<x_dimension; i++) {
 				fscanf(fp, "%d", &val);
 				image[j*x_dimension+i] = val;
+				vector_image.at(j*x_dimension+i) = val;
 			 }
 	
 		 }
 		 
 		 fclose(fp);
 		 free (fp);
+	
+
 		 free(image);
 		 
 
 	}
-
-	void PGM::write(const std::string file_path,const std::vector<unsigned char> &vector_image,const int &x_dimension,const int &y_dimension){
+	
+	void PGM::write(
+			const std::string file_path,
+			std::vector<unsigned char> &vector_image,
+			const int &x_dimension,
+			const int &y_dimension)
+	{
+		
 		if(vector_image.empty())
 			throw "no image found";
-
 		FILE *fp;
-		const unsigned char * image = vector_image.data(); 
+		std::cout<< "saving file to "<< file_path << std::endl; 
 		if ((fp=fopen(file_path.c_str(), "wb")) == NULL){
 			printf("write pgm error....\n");
-			exit(0);
+			exit(1);
 		}
-
 		int i,j;
-		
-	
 		fprintf(fp, "P5\n%d %d\n%d\n", x_dimension, y_dimension, 255);
 		for (j=0; j<y_dimension; j++)
 			for (i=0; i<x_dimension; i++) {
-				fputc(image[j*x_dimension+i], fp);
+				fputc(vector_image.at(j*x_dimension+i), fp);
 			}
-	
 		fclose(fp);
 		free (fp);
-	 
+		
 	}
+	
 }

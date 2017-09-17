@@ -41,7 +41,7 @@ template <typename T>
 class Bi_Linear
 {
   private:
-	Linear_System<T> * linear_system;
+	// Linear_System<T> * linear_system;
 	point_value<T> result;
 	void make_linear_system(const T &x,
 							const T &y,
@@ -55,8 +55,14 @@ class Bi_Linear
 		T A [n][n];
 	
 	
-		T  b[n];
-		T  x_vector[n];
+		T  b_vector[n];
+		b_vector[0] = I_00.value;
+		b_vector[1] = I_01.value;
+		b_vector[2] = I_10.value;
+		b_vector[3] = I_11.value;
+		
+		T x_vector[n];
+		
 		
 		//Column 0 set up
 		A[0][0] = 1;
@@ -78,12 +84,12 @@ class Bi_Linear
 
 		
 		//Column 3 set up
-		A[0][2] = I_00.y * I_00.x;
-		A[1][2] = I_01.y * I_01.x;
-		A[2][2] = I_10.y * I_10.x;
-		A[3][2] = I_11.y * I_11.x;
-	
-		linear_system = new Linear_System(A,x_vector,b);
+		A[0][3] = I_00.y * I_00.x;
+		A[1][3] = I_01.y * I_01.x;
+		A[2][3] = I_10.y * I_10.x;
+		A[3][3] = I_11.y * I_11.x;
+		Linear_System<T> linear_system(A,x_vector,b_vector);
+		linear_system.solveCrout();
 		linear_system.get_x(x_vector);
 		T a = x_vector[0];
 		T b = x_vector[1];
@@ -115,16 +121,23 @@ class Bi_Linear
 			  const point_value<T> &I_11)
 	{
 
-		this->linear_system= nullptr;
+		// this->linear_system= nullptr;
 		this->result.x=x;
 		this->result.y=y;
 		this->result.value = (T) 0;
+
+		make_linear_system( x,
+							y,
+							I_00, 
+							I_01,
+							I_10,
+							I_11);
 	}
 	~Bi_Linear(){
-		if(linear_system != nullptr){
-			delete this->linear_system;
-			this->linear_system= nullptr;
-		}
+		// if(linear_system != nullptr){
+		// 	delete this->linear_system;
+		// 	this->linear_system= nullptr;
+		// }
 	}
 	T get_value(){
 		return this->result.value;

@@ -44,6 +44,9 @@
 		"xtr1common": "cpp",
 		"ctime": "cpp",
 		"iomanip": "cpp",
-		"xloctime": "cpp"
+		"xloctime": "cpp",
+		"fstream": "cpp",
+		"sstream": "cpp",
+		"algorithm": "cpp"
 	}
 }
