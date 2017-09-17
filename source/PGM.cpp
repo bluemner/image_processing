@@ -84,11 +84,8 @@ namespace uwm{
 			 }
 	
 		 }
-		 
-		 fclose(fp);
-		 free (fp);
 	
-
+		 fclose(fp);
 		 free(image);
 		 
 
@@ -116,8 +113,7 @@ namespace uwm{
 				fputc(vector_image.at(j*x_dimension+i), fp);
 			}
 		fclose(fp);
-		free (fp);
-		
+	
 	}
 	
 }
