@@ -7,12 +7,61 @@
 #include <algorithm>
 #include "../headers/PGM.hpp"
 #include "../headers/bi_linear.hpp"
-
+#include "../headers/linear_system.hpp"
+#include "../headers/matrix.hpp"
 #define T double
-#define PIXEL_RANGE(l, min, max)if (l < min) { l = min; } else if (l > max) { l = max; } 
+
+int interpolate(
+	const T &x,
+	const T &y,
+	int A,
+	int B,
+	int C,
+	int D
+){	
+	int P  = (int)  A*(1-x)*(1-y)+
+			B *x *(1-y) +
+			C *(1-x)*y +
+			D * x * y;
+	
+		
+	return P;
+}
+
+void process(std::vector<unsigned char>  &pixels, std::vector<unsigned char> &temp, int w, int h, int w2, int h2){
+	int 
+		I_00, 
+		I_10, 
+		I_01, 
+		I_11, x, y, current, exp1 ;
+    float x_ratio = ((float)(w-1))/w2 ;
+    float y_ratio = ((float)(h-1))/h2 ;
+    float x_diff, y_diff, ya, yb ;
+    int offset = 0 ;
+    for (int i=0;i<h2;i++) {
+        for (int j=0;j<w2;j++) {
+            x = (int)(x_ratio * j) ;
+            y = (int)(y_ratio * i) ;
+            x_diff = (x_ratio * j) - x ;
+            y_diff = (y_ratio * i) - y ;
+            current = y*w+x ;
+
+            // range is 0 to 255 thus bitwise AND with 0xff
+            I_00 = pixels[current] & 0xff ;
+            I_10 = pixels[current+1] & 0xff ;
+            I_01 = pixels[current+w] & 0xff ;
+            I_11 = pixels[current+w+1] & 0xff ;
+            
+            temp[offset++] = interpolate(x_diff,y_diff,A,B,C,D);
+        }
+    }
+ 
+}
+
+
 int main(int argc, char *argv[])
 {
-	int x = 0, y = 0;
+	int w = 0, h = 0, v=0, u=0;
 	std::vector<unsigned char> image;
 	if (argc < 4)
 	{
@@ -34,86 +83,27 @@ int main(int argc, char *argv[])
 	}
 	
 	
-	UWM::PGM().read(file_path_original, image, x, y);
-	UWM::PGM().write("same.pgm", image, x, y);
+	UWM::PGM().read(file_path_original, image, w, h);
+	UWM::PGM().write("same.pgm", image, w, h);
 	std::cout <<"Image loaded" <<std::endl;
 
-	betacore::point_value<T> I_00;
-	betacore::point_value<T> I_01;
-	betacore::point_value<T> I_10;
-	betacore::point_value<T> I_11;
+	betacore::point_value<int> I_00;
+	betacore::point_value<int> I_01;
+	betacore::point_value<int> I_10;
+	betacore::point_value<int> I_11;
 
 	// your application here
 	// As an example, let's just make an inversion of the input image.
 
-	int dx = (int)x * t;
-	int dy = (int)y * t;
+	int dx = (int)w * t;
+	int dy = (int)h * t;
 	std::vector<unsigned char> changed_image;
-	changed_image.resize(dy * dx);	
-	std::cout<<std::fixed<<std::setprecision(2)<< "(" << x <<"," << y << ") * "<< t << " => ("<< dx << "," << dy <<")" <<std::endl;
+	std::vector<int> temp_image;
 
-	for(int j = 0; j< dy; j++ ){
-		T v = T(j) / T( dy-1 );
-		for (int i = 0; i < dx; i++){
-			T u = T(x) / T(dx-1);
-			
-			I_00.x = (int) (u * dx) + 0;
-			I_00.y = (int) (v * dy) + 0;
-			PIXEL_RANGE( I_00.x ,0,dx-1);
-			PIXEL_RANGE( I_00.y ,0,dy-1);
-			I_00.value = image[((int)I_00.y ) *x + ((int) I_00.x)];
-
-
-			I_01.x = (int) (u * dx) + 0;
-			I_01.y =(int) (v * dy)  + 1;
-			PIXEL_RANGE( I_01.x ,0,dx-1);
-			PIXEL_RANGE( I_01.y ,0,dy-1);
-			I_01.value= image[((int)I_01.y ) *x + ((int) I_01.x)];
-
-			I_10.x =(int) (u * dx) + 1;
-			I_10.y =(int) (v * dy)  + 0;
-			PIXEL_RANGE( I_10.x ,0,dx-1);
-			PIXEL_RANGE( I_10.y ,0,dy-1);
-			I_10.value= image[((int)I_10.y ) *x + ((int) I_10.x)];
-
-			
-			I_11.x =(int) (u * dx) + 1;
-			I_11.y = (int) (v * dy)  + 0;
-			PIXEL_RANGE( I_11.x ,0,dx-1);
-			PIXEL_RANGE( I_11.y ,0,dy-1);
-			I_11.value= image[((int)I_11.y ) *x + ((int) I_11.x)];
-
-			//std::cout<<std::fixed<<std::setprecision(2)<< "(" << i <<"," << j << ")" <<std::endl;
-			betacore::Bi_Linear<T> bl
-			(
-				i,
-				j,
-				I_00,
-				I_01,
-				I_10,
-				I_11
-			);
-			
-			char op1 =  (unsigned char) (
-				   I_00.value * (1-i)*(1-j)+ 
-				   I_10.value * i*(1-j) + 
-				   I_01.value *(1-i)*j + 
-				   I_11.value * i*j
-				);  
-		
-			char op2 = (char) bl.get_value();
-	
-			
-
-	
-			changed_image[j * dx + i]= op1; // image[((int)old_y) *x + ((int) old_x)];
-									
-			//image[j*dx+i];//
-			//
-			
-		}
-	}
-
+	changed_image.resize(dy * dx);
+	temp_image.resize(dy * dx);
+	std::cout<<std::fixed<<std::setprecision(2)<< "(" << w <<"," << h << ") * "<< t << " => ("<< dx << "," << dy <<")" <<std::endl;
+		process(image,changed_image,w,h,dx,dy);
 	
 		try{
 		UWM::PGM().write(file_path_new, changed_image, dx, dy);

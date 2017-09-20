@@ -23,7 +23,7 @@
 #ifndef _BETACORE_BI_LINEAR_INTERPOLATION_H_
 #define _BETACORE_BI_LINEAR_INTERPOLATION_H_
 
-
+#include "../headers/matrix.hpp"
 #ifndef _BETACORE_LINEAR_SYSTEM_H_
 #include "./linear_system.hpp"
 #endif
@@ -33,8 +33,8 @@ namespace betacore
 template <typename T>
 struct point_value
 {
-	T x;
-	T y;
+	int x;
+	int y;
 	T value;
 };
 template <typename T>
@@ -51,43 +51,45 @@ class Bi_Linear
 							const point_value<T> &I_11)
 	{
 		const size_t n = 4;
-	
-		T A [n][n];
-	
-	
-		T  b_vector[n];
-		b_vector[0] = I_00.value;
-		b_vector[1] = I_01.value;
-		b_vector[2] = I_10.value;
-		b_vector[3] = I_11.value;
 		
-		T x_vector[n];
+		betacore::Matrix<T> A (n);
+	
+	
+		betacore::Matrix<T>  b_vector(n,1);
+
+		b_vector.set((size_t)0,0, I_00.value);
+		b_vector.set((size_t)1,0, I_01.value);
+		b_vector.set((size_t)2,0, I_10.value);
+		b_vector.set((size_t)3,0, I_11.value);
+		
+		betacore::Matrix<T> x_vector(n,1);
 		
 		
 		//Column 0 set up
-		A[0][0] = 1;
-		A[1][0] = 1;
-		A[2][0] = 1;
-		A[3][0] = 1;
+		A.set((size_t)0,0,1);
+		A.set((size_t)1,0,1);
+		A.set((size_t)2,0,1);
+		A.set((size_t)3,0,1);
 		
 		//Column 1 set up
-		A[0][1] = I_00.x;
-		A[1][1] = I_01.x;
-		A[2][1] = I_10.x;
-		A[3][1] = I_11.x;
+		A.set((size_t)0,1,I_00.x);
+		A.set((size_t)1,1,I_01.x);
+		A.set((size_t)2,1,I_10.x);
+		A.set((size_t)3,1,I_11.x);
 
 		//Column 2 set up
-		A[0][2] = I_00.y;
-		A[1][2] = I_01.y;
-		A[2][2] = I_10.y;
-		A[3][2] = I_11.y;
+		A.set((size_t)0,2,I_00.y);
+		A.set((size_t)1,2,I_01.y);
+		A.set((size_t)2,2,I_10.y);
+		A.set((size_t)3,2,I_11.y);
 
 		
 		//Column 3 set up
-		A[0][3] = I_00.y * I_00.x;
-		A[1][3] = I_01.y * I_01.x;
-		A[2][3] = I_10.y * I_10.x;
-		A[3][3] = I_11.y * I_11.x;
+		A.set((size_t)0,3,I_00.y * I_00.x);
+		A.set((size_t)1,3,I_01.y * I_01.x);
+		A.set((size_t)2,3,I_10.y * I_10.x);
+		A.set((size_t)3,3,I_11.y * I_11.x);
+
 		Linear_System<T> linear_system(A,x_vector,b_vector);
 		linear_system.solveCrout();
 		linear_system.get_x(x_vector);
