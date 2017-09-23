@@ -9,18 +9,5 @@
 
 clear && make &&
 
-for i in 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
-do
-  ./bin/ReadWritePGMx.o ./data/ship.pgm ./bin/linux_run/linux_ship_0_$i.pgm $i
-done
- 
-for i in 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
-do
-  ./bin/ReadWritePGMx.o ./data/street.pgm ./bin/linux_run/linux_street_0_$i.pgm $i
-done
-
-for i in 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
-do
-  ./bin/ReadWritePGMx.o ./data/woman.pgm ./bin/linux_run/linux_woman_0_$i.pgm $i
-done
- 
+/hw1.o C:\Users\brand\git\image_processing\data\mri.pgm image_0-5.pgm 0.5
+/hw1.o C:\Users\brand\git\image_processing\data\mri.pgm image_2-5.pgm 2.5

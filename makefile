@@ -27,16 +27,10 @@ FLAGS =-W -ggdb -std=c++11
 SOURCE_DIR = source/
 HEADERS_DIR = headers/
 
-all: ReadWritePGMx driver house_holder_driver ReadWritePGM
+all: hw_one
 
-driver: $(SOURCE_DIR)driver.cpp | make_dir
-	$(COMPILER) $(FLAGS) $(HEADERS_DIR)matrix.hpp $(SOURCE_DIR)driver.cpp  -o $(OUTPUT_DIR)/driver.o
-house_holder_driver: $(SOURCE_DIR)house_holder_driver.cpp | make_dir
-	$(COMPILER) $(FLAGS) $(HEADERS_DIR)matrix.hpp $(SOURCE_DIR)house_holder_driver.cpp  -o $(OUTPUT_DIR)/house_holder_driver.o
-ReadWritePGM: $(SOURCE_DIR)ReadWritePGM.cpp | make_dir
-	$(COMPILER) $(FLAGS) $(HEADERS_DIR)matrix.hpp $(SOURCE_DIR)ReadWritePGM.cpp  -o $(OUTPUT_DIR)/ReadWritePGM.o
-ReadWritePGMx: $(SOURCE_DIR)ReadWritePGMx.cpp | make_dir
-	$(COMPILER) $(FLAGS) $(HEADERS_DIR)matrix.hpp $(SOURCE_DIR)ReadWritePGMx.cpp  -o $(OUTPUT_DIR)/ReadWritePGMx.o
+hw_one: $(SOURCE_DIR)hw1.cpp | make_dir
+	$(COMPILER) $(FLAGS) $(HEADERS_DIR)linear_system.hpp $(SOURCE_DIR)hw1.cpp  -o $(OUTPUT_DIR)/hw1.o
 
 make_dir:
 	mkdir -p $(OUTPUT_DIR) | mkdir -p data

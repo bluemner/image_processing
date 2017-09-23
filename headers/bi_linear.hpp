@@ -30,14 +30,14 @@
 
 namespace betacore
 {
-template <typename T>
+template <typename I>
 struct point_value
 {
 	int x;
 	int y;
-	T value;
+	I value;
 };
-template <typename T>
+template <typename T, typename I>
 class Bi_Linear
 {
   private:
@@ -45,17 +45,14 @@ class Bi_Linear
 	point_value<T> result;
 	void make_linear_system(const T &x,
 							const T &y,
-							const point_value<T> &I_00, 
-							const point_value<T> &I_01,
-							const point_value<T> &I_10,
-							const point_value<T> &I_11)
+							const point_value<I> &I_00, 
+							const point_value<I> &I_01,
+							const point_value<I> &I_10,
+							const point_value<I> &I_11)
 	{
-		const size_t n = 4;
-		
-		betacore::Matrix<T> A (n);
-	
-	
-		betacore::Matrix<T>  b_vector(n,1);
+		const size_t n = 4;		
+		betacore::Matrix<T> A (n);	
+		betacore::Matrix<T> b_vector(n,1);
 
 		b_vector.set((size_t)0,0, I_00.value);
 		b_vector.set((size_t)1,0, I_01.value);
@@ -97,7 +94,7 @@ class Bi_Linear
 		T b = x_vector[1];
 		T c = x_vector[2];
 		T d = x_vector[3];
-		result.value = (T) (a*x+b*y+c*x*y+d);
+		result.value = (I) (a*x+b*y+c*x*y+d);
 	}
   public:
 	// Bi_Linear(T &x_0, T &x_1, T &y_0, T &y_1,
@@ -117,16 +114,16 @@ class Bi_Linear
 	*/
 	Bi_Linear(const T &x,
 			  const T &y,
-			  const point_value<T> &I_00,
-			  const point_value<T> &I_01,
-			  const point_value<T> &I_10,
-			  const point_value<T> &I_11)
+			  const point_value<I> &I_00,
+			  const point_value<I> &I_10,
+			  const point_value<I> &I_01,
+			  const point_value<I> &I_11)
 	{
 
 		// this->linear_system= nullptr;
 		this->result.x=x;
 		this->result.y=y;
-		this->result.value = (T) 0;
+		this->result.value = (I) 0;
 
 		make_linear_system( x,
 							y,

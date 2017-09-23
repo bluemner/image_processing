@@ -9,7 +9,8 @@
 #include "../headers/bi_linear.hpp"
 #include "../headers/linear_system.hpp"
 #include "../headers/matrix.hpp"
-#define T double
+#define F float
+#define T int
 
 int interpolate(
 	const T &x,
@@ -29,12 +30,14 @@ int interpolate(
 }
 
 void process(std::vector<unsigned char>  &pixels, std::vector<unsigned char> &temp, int w, int h, int w2, int h2){
-	int 
-		I_00, 
-		I_10, 
-		I_01, 
-		I_11, x, y, current, exp1 ;
-    float x_ratio = ((float)(w-1))/w2 ;
+	int  x, y, current, op1,op2 ;
+	
+	betacore::point_value<int> I_00;
+	betacore::point_value<int> I_01;
+	betacore::point_value<int> I_10;
+	betacore::point_value<int> I_11;
+	
+	float x_ratio = ((float)(w-1))/w2 ;
     float y_ratio = ((float)(h-1))/h2 ;
     float x_diff, y_diff, ya, yb ;
     int offset = 0 ;
@@ -45,14 +48,40 @@ void process(std::vector<unsigned char>  &pixels, std::vector<unsigned char> &te
             x_diff = (x_ratio * j) - x ;
             y_diff = (y_ratio * i) - y ;
             current = y*w+x ;
+			
+			// 
+			// 	3               1
+			// 	1               6        8        0
+			//  +--------+--------+--------+--------+
+			//  |aaaaaaaa|aaaaaaaa|aaaaaaaa|bbbbbbbb|
+			//  +--------+--------+--------+--------+
+			// Need to just return the b bits
+			I_00.value = pixels[current] & 0xff ;
+			I_00.x =x;
+			I_00.y =y;
+			I_10.value = pixels[current+1] & 0xff ;
+			I_10.x =x+1;
+			I_10.y =y;
 
-            // range is 0 to 255 thus bitwise AND with 0xff
-            I_00 = pixels[current] & 0xff ;
-            I_10 = pixels[current+1] & 0xff ;
-            I_01 = pixels[current+w] & 0xff ;
-            I_11 = pixels[current+w+1] & 0xff ;
-            
-            temp[offset++] = interpolate(x_diff,y_diff,A,B,C,D);
+			I_01.value = pixels[current+w] & 0xff ;
+			I_01.x =x;
+			I_01.y =y+1;
+
+			I_11.value = pixels[current+w+1] & 0xff ;
+			I_11.x =x;
+			I_11.y =y+1;
+            // betacore::Bi_Linear<float,int> bl(
+			// 	x_diff,
+			// 	y_diff,
+			// 	I_00,
+			// 	I_10,
+			// 	I_01,
+			// 	I_11
+			// );
+			// op2 = (int) bl.get_value();
+			op1 = interpolate(x_diff,y_diff,I_00.value,I_10.value,I_01.value,I_11.value);
+		
+            temp[offset++] =op1;
         }
     }
  
@@ -75,22 +104,17 @@ int main(int argc, char *argv[])
 	std::string file_path_original = std::string(argv[1]);
 	std::string file_path_new = std::string(argv[2]);
 	//replace( file_path_new.begin(), file_path_new.end(), '\\', '/' );
-	T t = 1.0;
+	double t = 1.0;
 	try{
 		 t = std::stod( argv[3]);
 	}catch(std::exception e){
 		exit(-2);
 	}
 	
-	
 	UWM::PGM().read(file_path_original, image, w, h);
 	UWM::PGM().write("same.pgm", image, w, h);
 	std::cout <<"Image loaded" <<std::endl;
 
-	betacore::point_value<int> I_00;
-	betacore::point_value<int> I_01;
-	betacore::point_value<int> I_10;
-	betacore::point_value<int> I_11;
 
 	// your application here
 	// As an example, let's just make an inversion of the input image.
@@ -105,7 +129,7 @@ int main(int argc, char *argv[])
 	std::cout<<std::fixed<<std::setprecision(2)<< "(" << w <<"," << h << ") * "<< t << " => ("<< dx << "," << dy <<")" <<std::endl;
 		process(image,changed_image,w,h,dx,dy);
 	
-		try{
+	try{
 		UWM::PGM().write(file_path_new, changed_image, dx, dy);
 	}catch(const std::exception& e){
 		
