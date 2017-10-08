@@ -1,0 +1,236 @@
+\documentclass[12pt]{article}
+\usepackage[]{algorithm2e}
+\usepackage{ amssymb }
+\usepackage{amsmath}
+\usepackage[hyphens]{url}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{listinggray}{gray}{0.9}
+\definecolor{lbcolor}{rgb}{0.9,0.9,0.9}
+\lstset{
+    backgroundcolor=\color{lbcolor},
+    tabsize=4,
+    language=C++,
+    captionpos=b,
+    tabsize=3,
+    frame=lines,
+    numbers=left,
+    numberstyle=\tiny,
+    numbersep=5pt,
+    breaklines=true,
+    showstringspaces=false,
+    basicstyle=\footnotesize,
+    %  identifierstyle=\color{magenta},
+    keywordstyle=\color[rgb]{0,0,1},
+    commentstyle=\color{Darkgreen},
+    stringstyle=\color{red}
+}
+
+\begin{document}
+\title{Homework 1 CS-712}
+\author{Brandon Bluemner}
+\date{2017}
+\maketitle
+% //Start
+
+    %% ____________________________________________________________________________
+    %% Problem 1
+    %% ____________________________________________________________________________
+    \section{Problem 1}
+      
+        \begin{table}
+        \centering
+        \caption{S1 $   || \quad \quad   $ S2 $ \quad \ \ \ \ |||  $ S1 $\cup$ S2 $ \quad \quad $}
+
+
+         \begin{tabular}{ | l | l | l | l | | l | l | l | l | | | l | l | l | l | }
+            
+            \hline
+            0 & 0 & 0 & 0 &   0 & 0 & 1 & 1 &                        0 & 0 & \underline{\textbf{1}} & \underline{\textbf{1}}\\\hline
+            0 & 0 & 1 & 0 &   0 & 1 & 0 & 0 &                        0 & \underline{\textbf{1}} & \underline{\textbf{1}} & 0\\\hline
+            0 & 0 & 1 & 0 &   \underline{1} & 1 & 0 & 0 &   \underline{\textbf{1}} & \underline{\textbf{1}} & \underline{\textbf{1}} & 0\\\hline
+            0 & 1 & 1 & \underline{1} &   0 & 0 & 0 & 0 &   0 & \underline{\textbf{1}} & \underline{\textbf{1}} & \underline{\textbf{1}}\\\hline
+            \end{tabular}
+            \label{tab:table1}
+        \end{table}
+
+        \subsection{a : 4 - adjacent}
+        As show in the  \textbf{ Table \ref{tab:table1}} for 4 - adjacent the answer is no, 
+        this is because $\forall i \in [0-3],   S1[i][3] \neq S2[i][0]$. 
+        So the column 3 in S1 and the column 0 in s2 have no over laps with 
+        respect to $V=\{1\}$
+
+        \subsection{b : 8 - adjacent}
+        Ths is an adjacent connection  show by the two underscored numbers
+        in S1 and S2 ( $S1[3][3] = S2[0][3]$ on the diagonal )
+
+        \subsection{Union Question}
+        $ S1 \cup S2 $ (as shown in the far right of Table \ref{tab:table1}) is both
+        4-adjacent, denoted by bold numbers and 8-adjacent denoted by underscored numbers.
+    \newpage
+    %% ____________________________________________________________________________
+    %% Problem 2
+    %% ____________________________________________________________________________
+    \section{Problem 2}
+    The images shown below are quite different, but their histograms are the same. 
+    Suppose that each image is blurred with a 3*3 averaging mask. Would the 
+    histograms of the blurred images still be equal? Please explain.
+    
+    No, The left side blue effect will have pixes such as the following
+    \\
+    \begin{tabular}{ | l | l | l | }
+        \hline
+        0 & 0 & 1\\\hline
+        0 & 0 & 1\\\hline
+        0 & 0 & 1\\\hline
+        \end{tabular} 
+     \begin{tabular}{ | l | l | l | }
+            \hline
+            0 & 1 & 1\\\hline
+            0 & 1 & 1\\\hline
+            0 & 1 & 1\\\hline
+            \end{tabular}
+    \\
+    how ever the right had side will get a blur filer of 
+    \\
+    \begin{tabular}{ | l | l | l | }
+        \hline
+        1 & 0 & 0\\\hline
+        0 & 1 & 1\\\hline
+        0 & 1 & 1\\\hline
+        \end{tabular}
+    which will yield a intensity that the left image won't have. \\
+    $\therefore$ the images will be different.
+    %% ____________________________________________________________________________
+    %% Problem 3
+    %% ____________________________________________________________________________
+    \section{Problem 3}
+            Consider the image segment shown 
+            \\
+            \begin{tabular}{ l l l l l l  }
+                & 3 & 1 & 2 & 1 & (q) \\
+                & 2 & 2 & 3 & 2 & \\
+                & 1 & 2 & 1 & 1 & \\
+                (p) & 1 & 0 & 1 & 2 & \\
+            \end{tabular}
+            %% Problem 3 a
+            \subsection{a : Let ${V=\{0,1\}}$}
+                
+                \begin{tabular}{ l l l l l l  }
+                    & x & 1 & x & 1 & (q) \\
+                    &  \underline{\textbf{x}} &  \underline{\textbf{x}} &  \underline{\textbf{x}} &  \underline{\textbf{x}} & \\
+                    & 1 & x & 1 & 1 & \\
+                    (p) & 1 & 0 & 1 & x & \\
+                \end{tabular}
+            \\
+            \\
+
+             There is no way for 4 -adjacent or 8 - adjacent to get from
+             $p \to q$, as $row[2]$ has no members of the set as shown above in 
+             underscored \underline{x}
+
+             %% Problem 3 b
+             \subsection{b : Let ${V=\{1,2\}}$}
+            %% \underline{\textbf{x}}
+             \begin{tabular}{ l l l l l l  }
+                & x & \underline{\textbf{1}} & \underline{\textbf{2}} & \underline{\textbf{1}} & (q) \\
+                & \underline{\textbf{2}} & \underline{\textbf{2}} & x & \underline{\textbf{2}} & \\
+                & \underline{\textbf{1}} & \underline{\textbf{2}} & \underline{\textbf{1}} & \underline{\textbf{1}} & \\
+                (p) & \underline{\textbf{1}} & x & 1 & 2 & \\
+             \end{tabular}
+             \\
+             \\
+             
+             A path exists for both \textbf{4-adjacent} and \textbf{8-adjacent} highlighted above.
+    %% ____________________________________________________________________________
+    %% Problem 4
+    %% ____________________________________________________________________________
+    \section{Problem 4}
+    Perform histogram equalization on the following histogram, where r is the intensity level 
+    and n is the number of pixels with the corresponding intensity level. You need to find out
+     the histogram after the equalization.
+        \begin{tabular}{ | l | l | l | }
+            \hline
+            r & n & ${n} \div (M \times N)$\\\hline
+            0 & 400 & 0.09765625\\\hline
+            1 & 700 & 0.170898438\\\hline
+            2 & 800 & 0.1953125\\\hline
+            3 & 900 & 0.219726563\\\hline
+            4 & 500 & 0.122070313\\\hline
+            5 & 400 & 0.09765625\\\hline
+            6 & 196 & 0.047851563\\\hline
+            7 & 200 & 0.048828125\\\hline
+            \hline        
+            $\sum$  & 4096 & M = 64\\\hline
+            $\sqrt{\sum}$ :: & 64  & N = 64\\\hline
+        \end{tabular}
+    \newpage
+    %% ____________________________________________________________________________
+    %% Problem 5
+    %% ____________________________________________________________________________    
+    \section{Problem 5}
+    Give a 3*3 mask for performing unsharp masking in a single pass through an image.
+    Assume that the average image is obtained using the filter below.
+    \\
+    \\
+    $\frac{1}{9} \times$  \begin{tabular}{ | l | l | l | }
+        \hline
+        1 & 1 & 1\\\hline
+        1 & 1 & 1\\\hline
+        1 & 1 & 1\\\hline
+    \end{tabular}
+    \\
+    \\
+    $f(x,y)=$ original image, \ \ $\bar{f}(x,y)$= blur image, 
+    $g_{mask}=f(x,y)-\bar{f}(x,y)$\\
+    $g(x,y)= f(x,y)+g_{mask} \Rightarrow g(x,y)= f(x,y)+f(x,y)-\bar{f}(x,y)\\
+    \therefore 2f(x,y)-\bar{f}(x,y) $ \\
+    
+    %% ____________________________________________________________________________
+    %% Problem 6
+    %% ____________________________________________________________________________
+    \section{Problem 6}
+    Textbook Problem 3.28
+    Show that subtracting the Laplacian from an image is proportional to unsharp masking. 
+    Use the definition for the Laplacian given below:
+    \\
+    \\
+    $\bigtriangledown^{2}f(x,y)= f(x+1, y) + f(x-1,y) + f(x,y+1)+f(x,y-1)-4f(x,y)$ \\
+    \\
+    $f(x,y)-\bigtriangledown^{2}f(x,y)=$\\
+    $=f(x,y)-[f(x+1, y) + f(x-1,y) + f(x,y+1)+f(x,y-1)-4f(x,y)]$\\
+    $=6f(x,y)-[f(x+1, y) + f(x-1,y) + f(x,y+1)+f(x,y-1)+1f(x,y)]$\\
+    $=5 \times [ \frac{6}{5} \times f(x,y)-$\\
+    $ \frac{1}{5} \times [f(x+1, y) + f(x-1,y) + f(x,y+1)+ f(x,y-1)+1f(x,y)]]$\\
+    \\
+    $=5 \times [\frac{6}{5}f(x,y)-\bar{f}(x,y)]$ \\
+    $\therefore  f(x,y) - \bigtriangledown^{2} f(x,y) \propto f(x,y)-\bar{f}(x,y) $
+    %% ____________________________________________________________________________
+    %% Problem 7
+    %% ____________________________________________________________________________
+    \section{Problem 7}
+    Textbook Problem 4.12
+    Consider a checkerboard image in which each square is 1mm * 1 mm. Assuming that the 
+    image extends infinitely in both coordinate directions, what is the minimum sampling
+     rate (in samples/mm) required to avoid aliasing?
+    (Hint; consider the image in the form of . . . 101010101 . . . .The period
+     of this signal is 2mm.)
+     \\
+     \\
+     $P= 2mm; frequency = \frac{1}{period}$\\
+     $max_{frequency} = \frac{1}{p} \Rightarrow max_{frequency} = \frac{1}{2}= 0.5 \frac{cycles}{mm} $  \\
+     to avoid the aliasing $2\times max_{frequency} = 2(0.5) = 1$
+     \\
+     \\
+     $\therefore$ each sample would need to exceed $\frac{1 sample}{mm}$
+
+     \section{Problem 8}
+     Prove that the 1DFT satisfies
+     $$F(0)= \sum_{x=0}^{M-1}f_{x}$$
+
+    $$F(u)= \sum_{x=0}^{M-1}f_{x} \times e^{\frac{-j2\pi ux}{M} }$$\\
+    $e^{ \frac{-j2\pi ux}{M} }$ where $u=0 \Rightarrow  e^{0}=1$
+    $$F(0)= \sum_{x=0}^{M-1}f_{x} \times 1 = \sum_{x=0}^{M-1}f_{x \ \blacksquare}  $$
+\end{document}
+
