@@ -150,20 +150,20 @@
     Perform histogram equalization on the following histogram, where r is the intensity level 
     and n is the number of pixels with the corresponding intensity level. You need to find out
      the histogram after the equalization.
-        \begin{tabular}{ | l | l | l | }
+        \begin{tabular}{ | l | l | l | l | l | }
             \hline
-            r & n & ${n} \div (M \times N)$\\\hline
-            0 & 400 & 0.09765625\\\hline
-            1 & 700 & 0.170898438\\\hline
-            2 & 800 & 0.1953125\\\hline
-            3 & 900 & 0.219726563\\\hline
-            4 & 500 & 0.122070313\\\hline
-            5 & 400 & 0.09765625\\\hline
-            6 & 196 & 0.047851563\\\hline
-            7 & 200 & 0.048828125\\\hline
+            r & n & ${n} \div (M \times N)$ & $S_k$ & $(int) S_k$\\\hline    
+            0 & 400 & 0.09765625 & 0.68359375 & 1\\\hline
+            1 & 700 & 0.170898438 & 1.879882813 & 2\\\hline
+            2 & 800 & 0.1953125 & 3.247070313 & 3\\\hline
+            3 & 900 & 0.219726563 & 4.78515625 & 5\\\hline
+            4 & 500 & 0.122070313 & 5.639648438 & 6\\\hline
+            5 & 400 & 0.09765625 & 6.323242188 & 6\\\hline
+            6 & 196 & 0.047851563 & 6.658203125 & 7\\\hline
+            7 & 200 & 0.048828125 & 7 & 7\\\hline
             \hline        
-            $\sum$  & 4096 & M = 64\\\hline
-            $\sqrt{\sum}$ :: & 64  & N = 64\\\hline
+            $\sum$  & 4096 & M = 64 & & \\\hline
+            $\sqrt{\sum}$ :: & 64  & N = 64 & &\\\hline
         \end{tabular}
     \newpage
     %% ____________________________________________________________________________
