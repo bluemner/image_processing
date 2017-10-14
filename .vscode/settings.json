@@ -47,7 +47,13 @@
 		"xloctime": "cpp",
 		"fstream": "cpp",
 		"sstream": "cpp",
-		"algorithm": "cpp"
+		"algorithm": "cpp",
+		"xtime": "cpp",
+		"functional": "cpp",
+		"xthread": "cpp",
+		"thread": "cpp",
+		"tuple": "cpp",
+		"xfunctional": "cpp"
 	},
 	"cSpell.words": [
 		"cuda",
