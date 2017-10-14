@@ -23,7 +23,7 @@
             "program": "${workspaceRoot}/bin/hw2.exe",
             "args": [
                 "${workspaceRoot}/data/test-img.pgm",
-                "out.pgm",
+                "${workspaceRoot}/bin/out.pgm",
                 "5",
                 "4"
             ],
