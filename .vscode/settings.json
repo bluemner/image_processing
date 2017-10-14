@@ -50,6 +50,7 @@
 		"algorithm": "cpp"
 	},
 	"cSpell.words": [
-		"cuda"
+		"cuda",
+		"stoi"
 	]
 }
