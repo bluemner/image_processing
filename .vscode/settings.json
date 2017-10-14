@@ -48,5 +48,9 @@
 		"fstream": "cpp",
 		"sstream": "cpp",
 		"algorithm": "cpp"
-	}
+	},
+	"cSpell.words": [
+		"cuda",
+		"stoi"
+	]
 }

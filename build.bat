@@ -49,3 +49,8 @@ set compilerflags=/Fo.\bin\ /Od /Zi /EHsc
 set linkerflags=/OUT:bin\%file_name%.exe
 cl.exe %compilerflags% source/%file_name%.cpp /link %linkerflags%
 
+set file_name=hw2
+echo building %file_name%
+set compilerflags=/Fo.\bin\ /Od /Zi /EHsc 
+set linkerflags=/OUT:bin\%file_name%.exe
+cl.exe %compilerflags% source/%file_name%.cpp /link %linkerflags%
