@@ -135,6 +135,32 @@ class PGM{
 		fclose(fp);
 	
 	}
+
+	static void write(
+		const std::string file_path,
+		unsigned char *vector_image,
+		const int &x_dimension,
+		const int &y_dimension)
+	{
+
+		
+		FILE *fp;
+		std::cout << "saving file to " << file_path << std::endl;
+		if ((fp = fopen(file_path.c_str(), "wb")) == NULL)
+		{
+			printf("write pgm error....\n");
+			exit(1);
+		}
+		int i, j;
+		fprintf(fp, "P5\n%d %d\n%d\n", x_dimension, y_dimension, 255);
+		for (j = 0; j < y_dimension; j++)
+			for (i = 0; i < x_dimension; i++)
+			{
+				fputc(vector_image[j * x_dimension + i], fp);
+			}
+		fclose(fp);
+	
+	}
 };
 }
 

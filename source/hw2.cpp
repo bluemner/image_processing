@@ -6,7 +6,7 @@
 #include "../headers/PGM.hpp"
 #define T float
 
-void apply_mask(const int segment_start, // start of segment 
+void apply_maskx(const int segment_start, // start of segment 
                 const int segment_size, // segment size
                 const int mask_size, // size of mask
                 T** mask, // mask
@@ -52,7 +52,52 @@ void apply_mask(const int segment_start, // start of segment
     }
     std::cout << "Exiting thread" <<std::endl;
 }
+void apply_mask(const int segment_start, // start of segment 
+    const int segment_size, // segment size
+    const int mask_size, // size of mask
+    T** mask, // mask
+    const int y_dimension, // image height
+    const int x_dimension, // image width
+    const  std::vector<unsigned char> &original,
+    unsigned char * filtered)
+{
+    int k_shift = 0;
+    int l_shift = 0;
+    T temp_0 =0;
+    T temp_1 =0;
+    T max = 0;
+    T min =0;
+    for(int i =0; i<x_dimension; i++){
+    for(int j=segment_start; j< segment_size; j++){
+    for(int k=0; k <  mask_size; k++){
+        for(int l=0;l <  mask_size; l++){
 
+            //filtered[j*image_width+ i] = mask[k-i][l-j] *filtered[j*image_width+ i];
+            k_shift = i - k / 2;
+            l_shift = j - l / 2;
+            if( k < 0 || k >= i){
+                k_shift=i;
+            }
+            if( l < 0 || l <=j ){
+                l_shift=j;
+            }
+            filtered[j*x_dimension+ i] += mask[l][k] * original[l_shift*x_dimension+k_shift ];
+            temp_0 += mask[l][k] * original[l_shift*x_dimension+k_shift ];
+            temp_1 += mask[l][k];
+            
+        }
+    }
+
+    filtered[j*x_dimension+ i]= (unsigned char) (temp_0 / temp_1); ///= mask_size;
+    temp_0 =0;
+    temp_1 =0;
+    if(i+1 == x_dimension && j+1==segment_size )
+        std::cout<<"Done with Row::"<< j << std::endl;
+    }
+
+    }
+    std::cout << "Exiting thread" <<std::endl;
+}
 void get_gaussian_mask(const int size, T** mask)
 {
     //               5 /2 = 2; 
@@ -128,10 +173,8 @@ int main(int argc, char * argv[]){
     
     get_gaussian_mask(mask_size, mask);
     print(mask_size,mask);
-
-    std::vector<unsigned char> fi;  
-    fi.resize(x_dimension * y_dimension);
     
+    unsigned char * fi = new unsigned char[x_dimension * y_dimension];
 
     std::vector<std::thread> thread_list;
 
@@ -142,13 +185,15 @@ int main(int argc, char * argv[]){
     int segment_start =0;
     for( int current_thread = 0 ; current_thread < thread_count; ++current_thread){ 
         if(segment_mod > 0){
-            segment_start=  current_thread * segment_size +1;
-            segment_size_adj = segment_size + 1;
+           
+            segment_size_adj = segment_start + segment_size + 1;
             --segment_mod;
         }else{
-            segment_start=  current_thread * segment_size;
-            segment_size_adj = segment_size;
+            segment_size_adj = segment_start+ segment_size;
         }
+        std::cout<<"Thread::"<< current_thread <<std::endl;
+        std::cout<<"Start::"<< segment_start <<std::endl;
+        std::cout<<"End::"<< segment_size_adj <<std::endl;
         /*
             const int segment_start, // start of segment 
             const int segment_size, // segment size
@@ -159,28 +204,30 @@ int main(int argc, char * argv[]){
             const  std::vector<unsigned char> &original,
             std::vector<unsigned char> &filtered
          */
-        // thread_list.push_back( 
-        //     std::thread(apply_mask,segment_start,
-        //                 segment_size_adj, mask_size,
-        //                 mask,
-        //                 y_dimension,
-        //                 x_dimension,
-        //                 image,
-        //                 fi)
-        //     );
+        thread_list.push_back( 
+            std::thread(apply_mask,segment_start,
+                        segment_size_adj, mask_size,
+                        mask,
+                        y_dimension,
+                        x_dimension,
+                        image,
+                        fi)
+            );
+            segment_start = segment_size_adj;
     }
     
-    apply_mask(0,y_dimension , mask_size,mask,y_dimension, x_dimension,image, fi);
-    // for(int i = 0 ; i < thread_count; ++i){
-    //     thread_list[i].join();
-    // }
+    //apply_mask(0,y_dimension , mask_size,mask,y_dimension, x_dimension,image, fi);
+    for(int i = 0 ; i < thread_list.size(); ++i){
+        thread_list[i].join();
+    }
     std::cout<<"Saving..."<<std::endl;
-    UWM::PGM().write(file_path_new,fi , x_dimension, y_dimension);
+    //std::vector<unsigned char> fiv(fi,fi + x_dimension*y_dimension );
+    UWM::PGM().write(file_path_new,fi  , x_dimension, y_dimension);
     // Clean up
     for(int i = 0; i < mask_size; i++){
        delete mask[i];
     }
     delete mask;
-
+    delete fi;
     return 0;
 }
