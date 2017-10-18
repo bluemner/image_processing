@@ -134,7 +134,6 @@ void bilateral_filtering(
         for(int j=segment_start; j< segment_size; j++){
              for(int k=0; k <  mask_size; k++){
                 for(int l=0;l <  mask_size; l++){
-
                     //
                     k_shift = i - k / 2;
                     l_shift = j - l / 2;
@@ -146,15 +145,20 @@ void bilateral_filtering(
                     }
                         // // w(i,j,k,l)= e^[ -( (i-k)+(j-l)^2 )/ (2 sigma^2_d) - ||I(i,j)- I(k,l)||^2/ (2 sigma^2_r) ] 
                         T LHS = -1*( (i-k)+(j-l)*(j-l) ) / (2* s_d) ;
-                        T RHS = original[j * x_dimension + i] - original[k * x_dimension + l];//norm();
+                        T RHS = original[j * x_dimension + i] - original[k_shift * x_dimension + l_shift];//norm();
                         RHS = RHS *RHS / s_r  ; // sqare the top over bottem
-                        w= exp(LHS - RHS);                       
-                       
+                        
+                        w= exp(LHS - RHS);
+                                         
                         temp_0 += w * original[l_shift*x_dimension+k_shift ];
                         temp_1 += w;
                 }
             }
-
+            filtered[j*x_dimension+ i] =  (unsigned char) (temp_0 / temp_1);
+            temp_0 =0;
+            temp_1 =0;
+            if(i+1 == x_dimension && j+1==segment_size )
+                std::cout<<"Done with Row::"<< j << std::endl;
         }
 
     }
@@ -171,19 +175,21 @@ void print(const int size, T** mask){
 }
 
 int main(int argc, char * argv[]){
-    if (argc < 5){
+    if (argc < 6){
 		std::cout << "Usage:" << std::endl;
 		std::cout << "\t<file_path_original>" << std::endl;
-		std::cout << "\t<file_path_new>" << std::endl;
+        std::cout << "\t<file_path_new_bilateral_filtering>" << std::endl;
+        std::cout << "\t<file_path_new_gaussian>" << std::endl;
         std::cout << "\t<mask_size>" << std::endl;
         std::cout << "\t<cpu_thread_count>"  << std::endl;
 		exit(-1);
     }
     
 	std::string file_path_original = std::string(argv[1]);
-    std::string file_path_new = std::string(argv[2]);
-    int mask_size  = std::stoi(argv[3]);
-    int thread_count   = std::stoi(argv[4]);
+    std::string file_path_new_bilateral_filtering = std::string(argv[2]);
+    std::string file_path_new_gaussian = std::string(argv[3]);
+    int mask_size  = std::stoi(argv[4]);
+    int thread_count   = std::stoi(argv[5]);
     
     if(mask_size < 1 || thread_count < 1){
         std::cerr << "mask_size >=1 & thread_count >=1" <<std::endl;
@@ -214,7 +220,7 @@ int main(int argc, char * argv[]){
     print(mask_size,mask);
     
     unsigned char * fi = new unsigned char[x_dimension * y_dimension];
-
+    unsigned char * gi = new unsigned char[x_dimension * y_dimension];
     std::vector<std::thread> thread_list;
 
     int segment_size =  y_dimension / thread_count ;
@@ -246,18 +252,37 @@ int main(int argc, char * argv[]){
             segment_start = segment_size_adj;
     }
     //apply_mask(0,y_dimension , mask_size,mask,y_dimension, x_dimension,test_image, fi);
+    /*
+        bilateral_filtering(
+    const int segment_start,
+    const int segment_size,
+    const int mask_size,
+    const int y_dimension, // image height
+    const int x_dimension, // image width
+    unsigned char * original,
+    unsigned char * filtered)
+    */
 
+    bilateral_filtering(0,
+        y_dimension,
+        mask_size,
+        y_dimension, // image height
+        x_dimension, // image width
+        test_image,
+        gi);
     for(int i = 0 ; i < thread_list.size(); ++i){
         thread_list[i].join();
     }
     std::cout<<"Saving..."<<std::endl;
 
-    UWM::PGM().write(file_path_new,fi  , x_dimension, y_dimension);
+    UWM::PGM().write(file_path_new_bilateral_filtering,fi  , x_dimension, y_dimension);
+    UWM::PGM().write(file_path_new_gaussian,gi, x_dimension, y_dimension);
     // Clean up
     for(int i = 0; i < mask_size; i++){
        delete mask[i];
     }
     delete mask;
     delete fi;
+    delete gi;
     return 0;
 }

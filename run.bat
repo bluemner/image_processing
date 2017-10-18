@@ -11,7 +11,7 @@ REM .\bin\hw1.exe data\mri.pgm bin\timage_5-0.pgm 5
 
 
 .\bin\hw2.exe data\test-img.pgm bin\timage_3_1.pgm 3 4
-.\bin\hw2.exe data\test-img.pgm bin\timage_5_1.pgm 5 4
+.\bin\hw2.exe data\test-img.pgm bin\t-image_bi_5_1.pgm bin\t-image_gi_5_1.pgm 5 4
 .\bin\hw2.exe data\test-img.pgm bin\timage_7_1.pgm 7 4
 .\bin\hw2.exe data\test-img.pgm bin\timage_9_1.pgm 9 4
 .\bin\hw2.exe data\test-img.pgm bin\timage_25_1.pgm 25 4
