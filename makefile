@@ -27,10 +27,12 @@ FLAGS =-W -ggdb -std=c++11
 SOURCE_DIR = source/
 HEADERS_DIR = headers/
 
-all: hw_one
+all: hw_one hw_two
 
 hw_one: $(SOURCE_DIR)hw1.cpp | make_dir
 	$(COMPILER) $(FLAGS) $(HEADERS_DIR)linear_system.hpp $(SOURCE_DIR)hw1.cpp  -o $(OUTPUT_DIR)/hw1.o
+hw_two: $(SOURCE_DIR)hw2.cpp | make_dir
+	$(COMPILER) $(FLAGS) $(HEADERS_DIR)linear_system.hpp $(SOURCE_DIR)hw2.cpp  -o $(OUTPUT_DIR)/hw2.o
 
 make_dir:
 	mkdir -p $(OUTPUT_DIR) | mkdir -p data
