@@ -12,7 +12,7 @@ void mean(
     unsigned char * image,
     unsigned char &result
     )
-{
+    {
     unsigned int sum =0;
     for(int i=0; i< y_dimension; ++i){
         for(int j=0; j<x_dimension; ++j){
@@ -116,9 +116,8 @@ void bilateral_filtering(
     const int y_dimension, // image height
     const int x_dimension, // image width
     unsigned char * original,
-    unsigned char * filtered
-
-){
+    T ** mask)
+{
     T sigma = 1.0;
     T s_d = 2.0 * sigma * sigma; 
     T s_r = 2.0 * sigma * sigma; 
@@ -129,7 +128,7 @@ void bilateral_filtering(
     int l_shift = 0;
     T temp_0 =0;
     T temp_1 =0;
-    T w;
+    //T w;
     for(int i =0; i<x_dimension; i++){
         for(int j=segment_start; j< segment_size; j++){
              for(int k=0; k <  mask_size; k++){
@@ -143,22 +142,20 @@ void bilateral_filtering(
                     if( l_shift < 0 || l_shift >=y_dimension ){
                         l_shift=0;
                     }
-                        // // w(i,j,k,l)= e^[ -( (i-k)+(j-l)^2 )/ (2 sigma^2_d) - ||I(i,j)- I(k,l)||^2/ (2 sigma^2_r) ] 
-                        T LHS = -1*( (i-k)+(j-l)*(j-l) ) / (2* s_d) ;
-                        T RHS = original[j * x_dimension + i] - original[k_shift * x_dimension + l_shift];//norm();
-                        RHS = RHS *RHS / s_r  ; // sqare the top over bottem
-                        
-                        w= exp(LHS - RHS);
-                                         
-                        temp_0 += w * original[l_shift*x_dimension+k_shift ];
-                        temp_1 += w;
+                    // // w(i,j,k,l)= e^[ -( (i-k)+(j-l)^2 )/ (2 sigma^2_d) - ||I(i,j)- I(k,l)||^2/ (2 sigma^2_r) ] 
+                    T LHS = -1*( (i-k)+(j-l)*(j-l) ) / (2* s_d) ;
+                    T RHS = original[j * x_dimension + i] - original[k_shift * x_dimension + l_shift];//norm();
+                    RHS = RHS *RHS / s_r  ; // sqare the top over bottem
+                    mask[l][k] = exp(LHS - RHS);        
+                    //temp_0 += w * original[l_shift*x_dimension+k_shift ];
+                    //temp_1 += w;
                 }
             }
-            filtered[j*x_dimension+ i] =  (unsigned char) (temp_0 / temp_1);
-            temp_0 =0;
-            temp_1 =0;
-            if(i+1 == x_dimension && j+1==segment_size )
-                std::cout<<"Done with Row::"<< j << std::endl;
+            // filtered[j*x_dimension+ i] =  (unsigned char) (temp_0 / temp_1);
+            // temp_0 =0;
+            // temp_1 =0;
+            // if(i+1 == x_dimension && j+1==segment_size )
+            //     std::cout<<"Done with Row::"<< j << std::endl;
         }
 
     }
@@ -174,6 +171,12 @@ void print(const int size, T** mask){
     }
 }
 
+/*
+ *
+ * argc - argument count
+ * argv - argument vector
+ * 
+ */
 int main(int argc, char * argv[]){
     if (argc < 6){
 		std::cout << "Usage:" << std::endl;
@@ -223,14 +226,14 @@ int main(int argc, char * argv[]){
     unsigned char * gi = new unsigned char[x_dimension * y_dimension];
     std::vector<std::thread> thread_list;
 
-    int segment_size =  y_dimension / thread_count ;
-    int segment_size_adj=  y_dimension / thread_count;
-    int segment_mod = y_dimension % thread_count;
+    int segment_size     = y_dimension / thread_count;
+    int segment_size_adj = y_dimension / thread_count;
+    int segment_mod      = y_dimension % thread_count;
 
     int segment_start =0;
-    for( int current_thread = 0 ; current_thread < thread_count; ++current_thread){ 
+    for( int current_thread = 0 ; current_thread < thread_count; ++current_thread )
+    { 
         if(segment_mod > 0){
-           
             segment_size_adj = segment_start + segment_size + 1;
             --segment_mod;
         }else{
@@ -269,14 +272,19 @@ int main(int argc, char * argv[]){
         y_dimension, // image height
         x_dimension, // image width
         test_image,
-        gi);
+        mask);
+
+    apply_mask(0,y_dimension , mask_size,mask,y_dimension, x_dimension,test_image, gi);
+    
     for(int i = 0 ; i < thread_list.size(); ++i){
         thread_list[i].join();
     }
+
     std::cout<<"Saving..."<<std::endl;
 
     UWM::PGM().write(file_path_new_bilateral_filtering,fi  , x_dimension, y_dimension);
     UWM::PGM().write(file_path_new_gaussian,gi, x_dimension, y_dimension);
+
     // Clean up
     for(int i = 0; i < mask_size; i++){
        delete mask[i];
