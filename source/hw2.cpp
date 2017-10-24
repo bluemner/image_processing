@@ -6,7 +6,7 @@
 #include "../headers/PGM.hpp"
 #define T double
 #define B 256
-
+#define __SIGMA__ 5
 
 void apply_mask(const int segment_start, // start of segment 
     const int segment_size, // segment size
@@ -59,7 +59,7 @@ void get_gaussian_mask(const int size, T** mask)
 {
     //               5 /2 = 2; 
     int mp =(int)  size / 2;
-    T sigma = 1.0;
+    T sigma = (T) __SIGMA__;
     T r; 
     T s = 2.0 * sigma * sigma;
     T sum = 0.0;
@@ -116,8 +116,8 @@ void apply_bilateral_filtering_mask(
                     //                               * original[l_shift*x_dimension+k_shift ]
                     //                               * mask_2[abs_ps];
                    
-                    temp_0 += mask[l][k] * original[l_shift*x_dimension+k_shift ] ;
-                    temp_1 += mask[l][k] ; // mask_2[abs_ps]
+                    temp_0 += mask[l][k] *mask_2[abs_ps]* original[l_shift*x_dimension+k_shift ] ;
+                    temp_1 += mask[l][k] *mask_2[abs_ps] ; // mask_2[abs_ps]
                 }
             }
 
@@ -136,7 +136,7 @@ void bilateral_filtering_mask(const int mask_1_size, T** mask_1, const int mask_
 {
     //               5 /2 = 2; 
     int mp =(int)  mask_1_size / 2;
-    T sigma_s = 1.0, sigma_r =1.0;
+    T sigma_s = __SIGMA__, sigma_r =__SIGMA__;
     T rs = 2.0 * sigma_r * sigma_s; 
     T s = 2.0 * sigma_s * sigma_s;
     T sum = 0.0;
@@ -151,57 +151,7 @@ void bilateral_filtering_mask(const int mask_1_size, T** mask_1, const int mask_
     }
 
 }
-void bilateral_filtering(
-    const int segment_start,
-    const int segment_size,
-    const int mask_size,
-    const int y_dimension, // image height
-    const int x_dimension, // image width
-    unsigned char * original,
-    T ** mask)
-{
-    T sigma = 4.0;
-    T s_d = 2.0 * sigma * sigma; 
-    T s_r = 2.0 * sigma * sigma; 
-    
-    // // w(i,j,k,l)= e^[ -( (i-k)+(j-l)^2 )/ (2 sigma^2_d) - ||I(i,j)- I(k,l)||^2/ (2 sigma^2_r) ] 
 
-    int k_shift = 0;
-    int l_shift = 0;
-    T temp_0 =0;
-    T temp_1 =0;
-    //T w;
-    for(int i =0; i<x_dimension; i++){
-        for(int j=segment_start; j< segment_size; j++){
-             for(int k=0; k <  mask_size; k++){
-                for(int l=0;l <  mask_size; l++){
-                    //
-                    k_shift = i - k / 2;
-                    l_shift = j - l / 2;
-                    if( k_shift < 0 || k_shift >= x_dimension){
-                        k_shift=0;
-                    }
-                    if( l_shift < 0 || l_shift >=y_dimension ){
-                        l_shift=0;
-                    }
-                    // // w(i,j,k,l)= e^[ -( (i-k)+(j-l)^2 )/ (2 sigma^2_d) - ||I(i,j)- I(k,l)||^2/ (2 sigma^2_r) ] 
-                    T LHS = -1*( (i-k)+(j-l)*(j-l) ) / (2* s_d) ;
-                    T RHS = original[j * x_dimension + i] - original[k_shift * x_dimension + l_shift];//norm();
-                    RHS = RHS *RHS / s_r  ; // sqare the top over bottem
-                    mask[l][k] = exp(LHS - RHS);        
-                    //temp_0 += w * original[l_shift*x_dimension+k_shift ];
-                    //temp_1 += w;
-                }
-            }
-            // filtered[j*x_dimension+ i] =  (unsigned char) (temp_0 / temp_1);
-            // temp_0 =0;
-            // temp_1 =0;
-            // if(i+1 == x_dimension && j+1==segment_size )
-            //     std::cout<<"Done with Row::"<< j << std::endl;
-        }
-
-    }
-}
 
 void print(const int size, T** mask){
     for(int i=0; i< size; i++){
