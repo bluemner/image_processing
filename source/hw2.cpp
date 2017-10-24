@@ -291,7 +291,18 @@ int main(int argc, char * argv[]){
 
     UWM::PGM().write(file_path_new_bilateral_filtering,fi  , x_dimension, y_dimension);
     UWM::PGM().write(file_path_new_gaussian,gi, x_dimension, y_dimension);
-
+    
+    int alt_x = x_dimension * 3 + 20;
+    unsigned char * temp_stich = new unsigned char[alt_x * y_dimension];
+    for(int i =0; i<x_dimension; i++){// columns
+        for(int j=0; j<y_dimension; j++){//rows
+            temp_stich[j*alt_x +i]=test_image[j*x_dimension+i];
+            temp_stich[j*alt_x +i+x_dimension+10]=fi[j*x_dimension+i];
+            temp_stich[j*alt_x +i+2*x_dimension+20]=gi[j*x_dimension+i];
+        }
+    }
+    UWM::PGM().write("STICH_SOURCE_BIF_GF.pgm",temp_stich, alt_x, y_dimension);
+    delete temp_stich;
     // Clean up
     for(int i = 0; i < mask_size; i++){
        delete mask[i];
