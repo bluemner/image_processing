@@ -23,8 +23,9 @@
             "program": "${workspaceRoot}/bin/hw2.exe",
             "args": [
                 "${workspaceRoot}/data/test-img.pgm",
-                "${workspaceRoot}/bin/out_3.pgm",
-                "3",
+                "${workspaceRoot}/bin/out_bf_5_sig_5.pgm",
+                "${workspaceRoot}/bin/out_gf_5_sig_5.pgm",
+                "5",
                 "4"
             ],
             "stopAtEntry": false,
