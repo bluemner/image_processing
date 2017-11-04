@@ -43,17 +43,17 @@ IF %ERRORLEVEL% NEQ 0 Exit -1
 if not exist .\bin mkdir .\bin
 
 
-set file_name=hw1
-echo building %file_name%
-set compilerflags=/Fo.\bin\ /Od /Zi /EHsc 
-set linkerflags=/OUT:bin\%file_name%.exe
-cl.exe %compilerflags% source/%file_name%.cpp /link %linkerflags%
+REM set file_name=hw1
+REM echo building %file_name%
+REM set compilerflags=/Fo.\bin\ /Od /Zi /EHsc 
+REM set linkerflags=/OUT:bin\%file_name%.exe
+REM cl.exe %compilerflags% source/%file_name%.cpp /link %linkerflags%
 
-set file_name=hw2
-echo building %file_name%
-set compilerflags=/Fo.\bin\ /Od /Zi /EHsc 
-set linkerflags=/OUT:bin\%file_name%.exe
-cl.exe %compilerflags% source/%file_name%.cpp /link %linkerflags%
+REM set file_name=hw2
+REM echo building %file_name%
+REM set compilerflags=/Fo.\bin\ /Od /Zi /EHsc 
+REM set linkerflags=/OUT:bin\%file_name%.exe
+REM cl.exe %compilerflags% source/%file_name%.cpp /link %linkerflags%
 
 set file_name=hw3
 echo building %file_name%

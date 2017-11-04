@@ -34,50 +34,19 @@
             "externalConsole": false
         },
         {
-            "name": "ReadWritePGM Ship (Windows)",
+            "name": "Hw3 (Windows)",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/bin/ReadWritePGM.exe",
-                   "args": ["${workspaceRoot}/data/ship.pgm","${workspaceRoot}/bin/fix9_ship.pgm"],
+            "program": "${workspaceRoot}/bin/hw3.exe",
+            "args": [
+                "${workspaceRoot}/data/Knee.pgm",
+                "${workspaceRoot}/src/final.pgm"
+            ],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
             "environment": [],
             "externalConsole": false
-        },
-           {
-            "name": "xReadWritePGMx Ship (Windows)",
-            "type": "cppvsdbg",
-            "request": "launch",
-            "program": "${workspaceRoot}/bin/ReadWritePGMx.exe",
-                   "args": ["${workspaceRoot}/data/ship.pgm","${workspaceRoot}/bin/fix_shipxxx.pgm"],
-            "stopAtEntry": false,
-            "cwd": "${workspaceRoot}",
-            "environment": [],
-            "externalConsole": false
-        },
-         {
-            "name": "ReadWritePGM street (Windows)",
-            "type": "cppvsdbg",
-            "request": "launch",
-            "program": "${workspaceRoot}/bin/ReadWritePGM.exe",
-                   "args": ["${workspaceRoot}/data/street.pgm","${workspaceRoot}/bin/fix2_street.pgm"],
-            "stopAtEntry": false,
-            "cwd": "${workspaceRoot}",
-            "environment": [],
-            "externalConsole": false
-        },
-        {
-            "name": "Driver HH (Windows)",
-            "type": "cppvsdbg",
-            "request": "launch",
-            "program": "${workspaceRoot}/bin/house_holder_driver.exe",
-
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceRoot}",
-            "environment": [],
-            "externalConsole": false
-         }
+        }
 
     ]
 }
