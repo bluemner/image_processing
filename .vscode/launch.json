@@ -40,7 +40,8 @@
             "program": "${workspaceRoot}/bin/hw3.exe",
             "args": [
                 "${workspaceRoot}/data/Knee.pgm",
-                "${workspaceRoot}/src/final.pgm"
+                "${workspaceRoot}/bin",
+                "600"
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
@@ -48,5 +49,5 @@
             "externalConsole": false
         }
 
-    ]
+    ] 
 }
